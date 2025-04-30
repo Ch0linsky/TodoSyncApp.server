@@ -1,0 +1,6 @@
+@TodoSyncApp.server_HostAddress = http://localhost:5245
+
+GET {{TodoSyncApp.server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

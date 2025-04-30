@@ -1,0 +1,73 @@
+<Window x:Class="TodoSyncApp.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TodoSyncApp"
+        Height="450"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        Background="#f0f2f5">
+
+	<Grid Margin="20">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<TextBlock Text="Mis Tareas"
+                   FontWeight="Bold"
+                   FontSize="24"
+                   Foreground="{Binding IsLocked, Converter={StaticResource BoolToColorConverter}}"
+                   FontStyle="{Binding IsLocked, Converter={StaticResource BoolToItalicConverter}}"
+                   Margin="0,0,0,20" />
+
+		<!-- Lista de Tareas -->
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+			<ItemsControl ItemsSource="{Binding Tasks}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border CornerRadius="10" Background="White" Padding="10" Margin="0,0,0,10" BorderBrush="#ddd" BorderThickness="1">
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+								<!-- CheckBox de Completado -->
+								<CheckBox IsChecked="{Binding IsCompleted}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+								<!-- Título de la tarea -->
+								<TextBlock Text="{Binding Title}"
+                                           TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}"
+                                           VerticalAlignment="Center" FontSize="16" Width="300" />
+								<!-- Botón de Edición -->
+								<Button Content="✏️" Margin="10,0" Width="30"
+                                        ToolTip="Editar"
+                                        IsEnabled="{Binding IsLocked, Converter={StaticResource InverseBoolConverter}}"
+                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}" />
+								<!-- Botón de Eliminación -->
+								<Button Content="🗑" Width="30"
+                                        IsEnabled="{Binding IsLocked, Converter={StaticResource InverseBoolConverter}}"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}" />
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<!-- Botón Agregar Tarea -->
+		<Button Grid.Row="2" Content="Agregar Tarea" HorizontalAlignment="Right" Margin="0,10,0,0" Padding="10,5"
+                Command="{Binding AddCommand}" />
+	</Grid>
+
+	<!-- Detalles de la tarea (si es necesario visualizar) -->
+	<StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+		<!-- Título de la tarea -->
+		<TextBlock Text="{Binding Title}" Width="180" FontWeight="Bold"/>
+		<!-- Prioridad de la tarea -->
+		<TextBlock Text="{Binding Priority}" Width="60" Margin="10,0"/>
+		<!-- Etiquetas -->
+		<TextBlock Text="{Binding Tags}" Width="100" Margin="10,0"/>
+		<!-- Fecha límite -->
+		<TextBlock Text="{Binding DueDate, StringFormat='{}{0:dd/MM/yyyy}'}" Width="100" Margin="10,0"/>
+	</StackPanel>
+
+</Window>
